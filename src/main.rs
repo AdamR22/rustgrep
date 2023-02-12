@@ -1,16 +1,20 @@
 use std::env;
-use std::fs;
+use std::process;
+
+use rustgrep::Data;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
 
-    let query: &String = &args[1];
-    let file_path: &String = &args[2];
+    let data: Data = Data::get(&args).unwrap_or_else(|err| {
+        println!("Problem passing arguments: {err}");
+        process::exit(1);
+    });
 
-    println!("Searching for {}", query);
-    println!("In file {}", file_path);
+    print!("Searching for {} in {}\n", data.query, data.file_path);
 
-    let content: String = fs::read_to_string(file_path).expect("File not found");
-
-    println!("Text:\n {content}")
+    if let Err(e) = rustgrep::run(data) {
+        println!("Application error: {e}");
+        process::exit(1);
+    }
 }
