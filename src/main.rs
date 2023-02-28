@@ -3,9 +3,7 @@ use std::{env, process};
 use rustgrep::Data;
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-
-    let data: Data = Data::get(&args).unwrap_or_else(|err| {
+    let data: Data = Data::get(env::args()).unwrap_or_else(|err| {
         eprintln!("Problem passing arguments: {err}");
         process::exit(1);
     });
